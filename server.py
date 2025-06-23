@@ -12,7 +12,13 @@ game: Wordle
 def start_game() -> str:
     """
     Starts a new game, resetting the wordle game state and loading a new word.
-    TODO: give context on the game of wordle and how the rules work
+    Wordle is a word puzzle where players have six attempts to guess a hidden five-letter word. 
+    Each guess must be a valid five-letter word. 
+
+    After submitting a guess, the game provides feedback:
+    a) MATCH (green) means the letter is correct and in the right position,
+    b) PARTIAL (yellow) means the letter is in the word but in the wrong position, and 
+    c) MISS (grey) means the letter is not in the word at all
     
     Returns:
         A confirmation message indicating the game has started.
