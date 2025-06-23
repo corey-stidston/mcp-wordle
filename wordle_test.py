@@ -80,7 +80,45 @@ class TestWordleGame(unittest.TestCase):
                     game.guess(word)
                 self.assertEqual(f"'{word}' is not a valid word.", str(context.exception))
 
-    # TODO: double letters, partial mismatch
+    def test_doubleletterguess_partialmatch(self):
+        """
+        Given a guess containing two of the same letter. If the wordle word contains only 1 of those letters,
+        if neither letter is in the correct position, only the first letter should represent a partial match and the second a miss.
+        """
+        guessed_word = 'pasta'
+        game = Wordle('audio')
+
+        result = game.guess(guessed_word)
+
+        self.assertIsInstance(result, WordleGuessResult)
+        self.assertEqual(result.guess, guessed_word)
+        self.assertEqual(result.feedback, [
+            LetterFeedback('p', LetterState.MISS),
+            LetterFeedback('a', LetterState.PARTIAL),
+            LetterFeedback('s', LetterState.MISS),
+            LetterFeedback('t', LetterState.MISS),
+            LetterFeedback('a', LetterState.MISS)
+        ])
+
+    def test_doubleletterguess_match(self):
+        """
+        Given a guess containing two of the same letter. If the wordle word contains only 1 of those letters,
+        if one of the letters is in the correct position, the first letter should repesent a miss.
+        """
+        guessed_word = 'algae'
+        game = Wordle('audio')
+
+        result = game.guess(guessed_word)
+
+        self.assertIsInstance(result, WordleGuessResult)
+        self.assertEqual(result.guess, guessed_word)
+        self.assertEqual(result.feedback, [
+            LetterFeedback('a', LetterState.MATCH),
+            LetterFeedback('l', LetterState.MISS),
+            LetterFeedback('g', LetterState.MISS),
+            LetterFeedback('a', LetterState.MISS),
+            LetterFeedback('e', LetterState.MISS)
+        ])
 
 if __name__ == '__main__':
     unittest.main()
