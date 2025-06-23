@@ -8,16 +8,16 @@ class TestWordleGame(unittest.TestCase):
         with self.assertRaises(LengthMismatchError) as context:
             game.guess('thiswordistoolong')
 
-        self.assertEqual("Guessed word 'thiswordistoolong' is too long.", str(context.exception))
+        self.assertEqual("'thiswordistoolong' is too long.", str(context.exception))
 
     def test_wordtooshort(self):
         game = Wordle('audio')
         with self.assertRaises(LengthMismatchError) as context:
             game.guess('hi')
 
-        self.assertEqual("Guessed word 'hi' is too short.", str(context.exception))
+        self.assertEqual("'hi' is too short.", str(context.exception))
 
-    def test_correctguess(self):
+    def test_match_partial_miss(self):
         game = Wordle('audio')
         guessed_word = 'alien'
         result = game.guess(guessed_word)
@@ -26,7 +26,7 @@ class TestWordleGame(unittest.TestCase):
         self.assertEqual(result.guess, guessed_word)
         self.assertEqual(result.game_status, "IN_PROGRESS")
         self.assertEqual(len(result.feedback), len(guessed_word))
-
+        self.assertIsNone(result.word)
         self.assertEqual(result.feedback, [
             LetterFeedback('a', LetterState.MATCH),
             LetterFeedback('l', LetterState.MISS),
@@ -53,6 +53,7 @@ class TestWordleGame(unittest.TestCase):
         self.assertEqual(result.guess, guessed_word)
         self.assertEqual(result.game_status, "WON")
         self.assertEqual(len(result.feedback), len(guessed_word))
+        self.assertEqual(result.word, 'audio')
         
         for i, feedback in enumerate(result.feedback):
             self.assertEqual(feedback.state, LetterState.MATCH)
@@ -69,6 +70,7 @@ class TestWordleGame(unittest.TestCase):
 
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.game_status, "LOST")
+        self.assertEqual(result.word, 'audio')
 
     def test_invalidword(self):
         test_cases = ['rxrxd', '12345', 'argh!']

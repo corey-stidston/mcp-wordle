@@ -22,6 +22,7 @@ class WordleGuessResult:
     feedback: List[LetterFeedback]
     guess: str
     attempts_remaining: int
+    word: str | None = None
     game_status: Literal["IN_PROGRESS", "WON", "LOST"] = "IN_PROGRESS"
     
     def __post_init__(self):
@@ -47,7 +48,7 @@ class Wordle:
         guessed_word = guessed_word.lower()
         
         if (len(guessed_word) != len(self.word)):
-            raise LengthMismatchError(f"Guessed word '{guessed_word}' is too {'short' if len(guessed_word) < len(self.word) else 'long'}.")
+            raise LengthMismatchError(f"'{guessed_word}' is too {'short' if len(guessed_word) < len(self.word) else 'long'}.")
         
         if (guessed_word in self.guesses):
             raise GuessedAlreadyError(f"'{guessed_word}' has already been guessed.")
@@ -59,12 +60,18 @@ class Wordle:
         self.number_of_attempts = self.number_of_attempts + 1
 
         feedback = self._match(guessed_word)
-
-        return WordleGuessResult(
-            feedback = feedback,
-            guess = guessed_word,
-            attempts_remaining = self.MAX_NUMBER_OF_ATTEMPTS - self.number_of_attempts
+        attempts_remaining = self.MAX_NUMBER_OF_ATTEMPTS - self.number_of_attempts
+        
+        result = WordleGuessResult(
+            feedback=feedback,
+            guess=guessed_word,
+            attempts_remaining=attempts_remaining
         )
+        
+        if result.game_status in ["WON", "LOST"]:
+            result.word = self.word
+            
+        return result
     
     def _match(self, guessed_word, output = None, index = 0) -> List[LetterFeedback]:
         if (output is None):
