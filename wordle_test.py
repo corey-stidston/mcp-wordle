@@ -4,22 +4,22 @@ from wordle import GuessedAlreadyError, InvalidWordError, LengthMismatchError, L
 
 class TestWordleGame(unittest.TestCase):
     def test_wordtoolong(self):
-        game = Wordle('AUDIO')
+        game = Wordle('audio')
         with self.assertRaises(LengthMismatchError) as context:
-            game.guess('THISWORDISTOOLONG')
+            game.guess('thiswordistoolong')
 
-        self.assertEqual("Guessed word 'THISWORDISTOOLONG' is too long.", str(context.exception))
+        self.assertEqual("Guessed word 'thiswordistoolong' is too long.", str(context.exception))
 
     def test_wordtooshort(self):
-        game = Wordle('AUDIO')
+        game = Wordle('audio')
         with self.assertRaises(LengthMismatchError) as context:
-            game.guess('HI')
+            game.guess('hi')
 
-        self.assertEqual("Guessed word 'HI' is too short.", str(context.exception))
+        self.assertEqual("Guessed word 'hi' is too short.", str(context.exception))
 
     def test_correctguess(self):
-        game = Wordle('AUDIO')
-        guessed_word = 'ALIEN'
+        game = Wordle('audio')
+        guessed_word = 'alien'
         result = game.guess(guessed_word)
         
         self.assertIsInstance(result, WordleGuessResult)
@@ -28,25 +28,25 @@ class TestWordleGame(unittest.TestCase):
         self.assertEqual(len(result.feedback), len(guessed_word))
 
         self.assertEqual(result.feedback, [
-            LetterFeedback('A', LetterState.MATCH),
-            LetterFeedback('L', LetterState.MISS),
-            LetterFeedback('I', LetterState.PARTIAL),
-            LetterFeedback('E', LetterState.MISS),
-            LetterFeedback('N', LetterState.MISS)
+            LetterFeedback('a', LetterState.MATCH),
+            LetterFeedback('l', LetterState.MISS),
+            LetterFeedback('i', LetterState.PARTIAL),
+            LetterFeedback('e', LetterState.MISS),
+            LetterFeedback('n', LetterState.MISS)
         ])
 
     def test_repeatedword(self):
-        game = Wordle('AUDIO')
-        game.guess('ALIEN')
+        game = Wordle('audio')
+        game.guess('alien')
 
         with self.assertRaises(GuessedAlreadyError) as context:
-            game.guess('ALIEN')
+            game.guess('alien')
         
-        self.assertEqual("'ALIEN' has already been guessed.", str(context.exception))
+        self.assertEqual("'alien' has already been guessed.", str(context.exception))
 
     def test_win(self):
-        game = Wordle('AUDIO')
-        guessed_word = 'AUDIO'
+        game = Wordle('audio')
+        guessed_word = 'audio'
         result = game.guess(guessed_word)
         
         self.assertIsInstance(result, WordleGuessResult)
@@ -59,26 +59,28 @@ class TestWordleGame(unittest.TestCase):
             self.assertEqual(feedback.letter, guessed_word[i])
     
     def test_lose(self):
-        game = Wordle('AUDIO')
-        game.guess('TESTS')
-        game.guess('TEXTS')
-        game.guess('TENTS')
-        game.guess('THIGH')
-        game.guess('THAWS')
-        result = game.guess('THANK')
+        game = Wordle('audio')
+        game.guess('tests')
+        game.guess('texts')
+        game.guess('tents')
+        game.guess('thigh')
+        game.guess('thaws')
+        result = game.guess('thank')
 
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.game_status, "LOST")
 
     def test_invalidword(self):
-        test_cases = ['RXRXD', '12345', 'ARGH!']
-        game = Wordle('AUDIO')
+        test_cases = ['rxrxd', '12345', 'argh!']
+        game = Wordle('audio')
 
         for word in test_cases:
             with self.subTest(word=word):
                 with self.assertRaises(InvalidWordError) as context:
                     game.guess(word)
-                self.assertEqual("Guessed word 'THISWORDISTOOLONG' is too long.", str(context.exception))
+                self.assertEqual(f"'{word}' is not a valid word.", str(context.exception))
+
+    # TODO: double letters, partial mismatch
 
 if __name__ == '__main__':
     unittest.main()

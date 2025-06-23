@@ -1,6 +1,8 @@
 import array
+import json
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
 from typing import List, Optional, Literal
 
 class LetterState(Enum):
@@ -31,34 +33,27 @@ class WordleGuessResult:
         
         if self.attempts_remaining <= 0 and self.game_status == "IN_PROGRESS":
             self.game_status = "LOST"
-    
-    def to_dict(self) -> dict:
-        """Convert to a dictionary suitable for JSON serialization."""
-        return {
-            "feedback": [
-                {"letter": item.letter, "state": item.state.value} 
-                for item in self.feedback
-            ],
-            "guess": self.guess,
-            "attempts_remaining": self.attempts_remaining,
-            "game_status": self.game_status
-        }
-
 
 class Wordle:
     MAX_NUMBER_OF_ATTEMPTS = 6
-
+    
     def __init__(self, word):
-        self.word = word
+        self.word = word.lower()
         self.guesses = []
         self.number_of_attempts = 0
+        self.valid_words = self._load_words()
 
     def guess(self, guessed_word) -> WordleGuessResult:
+        guessed_word = guessed_word.lower()
+        
         if (len(guessed_word) != len(self.word)):
             raise LengthMismatchError(f"Guessed word '{guessed_word}' is too {'short' if len(guessed_word) < len(self.word) else 'long'}.")
         
         if (guessed_word in self.guesses):
             raise GuessedAlreadyError(f"'{guessed_word}' has already been guessed.")
+        
+        if guessed_word not in self.valid_words:
+            raise InvalidWordError(f"'{guessed_word}' is not a valid word.")
         
         self.guesses.append(guessed_word)
         self.number_of_attempts = self.number_of_attempts + 1
@@ -86,7 +81,16 @@ class Wordle:
             output.append(LetterFeedback(guessed_word[index], LetterState.MISS))
         
         return self._match(guessed_word, output, (index + 1))
-
+    
+    def _load_words(self) -> set:
+        script_dir = Path(__file__).parent
+        word_list_path = script_dir / 'word_list.json'
+        
+        try:
+            with open(word_list_path, 'r') as f:
+                return set(json.load(f)['words'])
+        except Exception as e:
+            raise RuntimeError(f"Error loading json word_list file {word_list_path} - {e}")
 
 class WordleError(Exception):
     """Base exception class for all Wordle game errors."""
