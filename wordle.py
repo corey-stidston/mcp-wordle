@@ -1,9 +1,8 @@
-import array
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional, Literal
+from typing import List, Literal
 
 class LetterState(Enum):
     MATCH = "MATCH"         # Correct letter in correct position
