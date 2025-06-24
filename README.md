@@ -14,16 +14,30 @@ Letter feedback is provided as:
 
 ## Installation
 
+### Claude
+
 You can install this server in Claude Desktop and interact with it right away by running:
 
 ```
 mcp install server.py
 ```
 
-Alternatively, you can add the following to your MCP config:
+### Github Copilot
+
+First, [install uv](https://docs.astral.sh/uv/#installation). Then, add the following to your MCP config:
 
 ```
-TODO: Work this out
+"mcp-wordle": {
+    "command": "uv",
+    "args": [
+        "run",
+        "--with",
+        "mcp[cli]",
+        "mcp",
+        "run",
+        "<path_to_repo>/mcp-wordle/server.py"
+    ]
+}
 ```
 
 ## Usage
