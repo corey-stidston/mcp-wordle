@@ -3,24 +3,24 @@ import unittest
 from wordle import GuessedAlreadyError, InvalidWordError, LengthMismatchError, LetterFeedback, Wordle, WordleGuessResult, LetterState
 
 class TestWordleGame(unittest.TestCase):
+    def setUp(self):
+        self.game = Wordle('audio', {"audio", "alien", "tests", "texts", "tents", "thigh", "thaws", "thank"})
+
     def test_wordtoolong(self):
-        game = Wordle('audio')
         with self.assertRaises(LengthMismatchError) as context:
-            game.guess('thiswordistoolong')
+            self.game.guess('thiswordistoolong')
 
         self.assertEqual("'thiswordistoolong' is too long.", str(context.exception))
 
     def test_wordtooshort(self):
-        game = Wordle('audio')
         with self.assertRaises(LengthMismatchError) as context:
-            game.guess('hi')
+            self.game.guess('hi')
 
         self.assertEqual("'hi' is too short.", str(context.exception))
 
     def test_match_partial_miss(self):
-        game = Wordle('audio')
         guessed_word = 'alien'
-        result = game.guess(guessed_word)
+        result = self.game.guess(guessed_word)
         
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.guess, guessed_word)
@@ -36,18 +36,16 @@ class TestWordleGame(unittest.TestCase):
         ])
 
     def test_repeatedword(self):
-        game = Wordle('audio')
-        game.guess('alien')
+        self.game.guess('alien')
 
         with self.assertRaises(GuessedAlreadyError) as context:
-            game.guess('alien')
+            self.game.guess('alien')
         
         self.assertEqual("'alien' has already been guessed.", str(context.exception))
 
     def test_win(self):
-        game = Wordle('audio')
         guessed_word = 'audio'
-        result = game.guess(guessed_word)
+        result = self.game.guess(guessed_word)
         
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.guess, guessed_word)
@@ -60,13 +58,12 @@ class TestWordleGame(unittest.TestCase):
             self.assertEqual(feedback.letter, guessed_word[i])
     
     def test_lose(self):
-        game = Wordle('audio')
-        game.guess('tests')
-        game.guess('texts')
-        game.guess('tents')
-        game.guess('thigh')
-        game.guess('thaws')
-        result = game.guess('thank')
+        self.game.guess('tests')
+        self.game.guess('texts')
+        self.game.guess('tents')
+        self.game.guess('thigh')
+        self.game.guess('thaws')
+        result = self.game.guess('thank')
 
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.game_status, "LOST")
@@ -74,12 +71,11 @@ class TestWordleGame(unittest.TestCase):
 
     def test_invalidword(self):
         test_cases = ['rxrxd', '12345', 'argh!']
-        game = Wordle('audio')
 
         for word in test_cases:
             with self.subTest(word=word):
                 with self.assertRaises(InvalidWordError) as context:
-                    game.guess(word)
+                    self.game.guess(word)
                 self.assertEqual(f"'{word}' is not a valid word.", str(context.exception))
 
     def test_doubleletterguess_partialmatch(self):
@@ -90,7 +86,7 @@ class TestWordleGame(unittest.TestCase):
         guessed_word = 'pasta'
         game = Wordle('audio')
 
-        result = game.guess(guessed_word)
+        result = self.game.guess(guessed_word)
 
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.guess, guessed_word)
@@ -110,7 +106,7 @@ class TestWordleGame(unittest.TestCase):
         guessed_word = 'algae'
         game = Wordle('audio')
 
-        result = game.guess(guessed_word)
+        result = self.game.guess(guessed_word)
 
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.guess, guessed_word)

@@ -1,7 +1,5 @@
-import json
 from dataclasses import dataclass
 from enum import Enum
-from pathlib import Path
 from typing import List, Literal
 
 class LetterState(Enum):
@@ -37,11 +35,11 @@ class WordleGuessResult:
 class Wordle:
     MAX_NUMBER_OF_ATTEMPTS = 6
     
-    def __init__(self, word):
+    def __init__(self, word, word_list):
         self.word = word.lower()
         self.guesses = []
         self.number_of_attempts = 0
-        self.valid_words = self._load_words()
+        self.word_list = word_list
 
     def guess(self, guessed_word) -> WordleGuessResult:
         guessed_word = guessed_word.lower()
@@ -52,7 +50,7 @@ class Wordle:
         if (guessed_word in self.guesses):
             raise GuessedAlreadyError(f"'{guessed_word}' has already been guessed.")
         
-        if guessed_word not in self.valid_words:
+        if guessed_word not in self.word_list:
             raise InvalidWordError(f"'{guessed_word}' is not a valid word.")
         
         self.guesses.append(guessed_word)
@@ -87,16 +85,6 @@ class Wordle:
             output.append(LetterFeedback(guessed_word[index], LetterState.MISS))
         
         return self._match(guessed_word, output, (index + 1))
-    
-    def _load_words(self) -> set:
-        script_dir = Path(__file__).parent
-        word_list_path = script_dir / 'word_list.json'
-        
-        try:
-            with open(word_list_path, 'r') as f:
-                return set(json.load(f)['words'])
-        except Exception as e:
-            raise RuntimeError(f"Error loading json word_list file {word_list_path} - {e}")
 
 class WordleError(Exception):
     """Base exception class for all Wordle game errors."""
