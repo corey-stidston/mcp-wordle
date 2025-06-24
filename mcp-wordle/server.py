@@ -60,3 +60,6 @@ def guess(guessed_word: str) -> WordleGuessResult:
     """
     global game
     return game.guess(guessed_word)
+
+if __name__ == "__main__":
+    mcp.run()
