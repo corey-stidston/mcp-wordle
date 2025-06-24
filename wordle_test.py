@@ -4,7 +4,7 @@ from wordle import GuessedAlreadyError, InvalidWordError, LengthMismatchError, L
 
 class TestWordleGame(unittest.TestCase):
     def setUp(self):
-        self.game = Wordle('audio', {"audio", "alien", "tests", "texts", "tents", "thigh", "thaws", "thank"})
+        self.game = Wordle('audio', {"audio", "alien", "tests", "texts", "tents", "thigh", "thaws", "thank", "pasta", "algae"})
 
     def test_wordtoolong(self):
         with self.assertRaises(LengthMismatchError) as context:
@@ -30,7 +30,7 @@ class TestWordleGame(unittest.TestCase):
         self.assertEqual(result.feedback, [
             LetterFeedback('a', LetterState.MATCH),
             LetterFeedback('l', LetterState.MISS),
-            LetterFeedback('i', LetterState.PARTIAL),
+            LetterFeedback('i', LetterState.PARTIAL_MATCH),
             LetterFeedback('e', LetterState.MISS),
             LetterFeedback('n', LetterState.MISS)
         ])
@@ -78,34 +78,32 @@ class TestWordleGame(unittest.TestCase):
                     self.game.guess(word)
                 self.assertEqual(f"'{word}' is not a valid word.", str(context.exception))
 
+    #TODO: Add logic to pass failing test
     def test_doubleletterguess_partialmatch(self):
         """
         Given a guess containing two of the same letter. If the wordle word contains only 1 of those letters,
         if neither letter is in the correct position, only the first letter should represent a partial match and the second a miss.
         """
         guessed_word = 'pasta'
-        game = Wordle('audio')
-
         result = self.game.guess(guessed_word)
 
         self.assertIsInstance(result, WordleGuessResult)
         self.assertEqual(result.guess, guessed_word)
         self.assertEqual(result.feedback, [
             LetterFeedback('p', LetterState.MISS),
-            LetterFeedback('a', LetterState.PARTIAL),
+            LetterFeedback('a', LetterState.PARTIAL_MATCH),
             LetterFeedback('s', LetterState.MISS),
             LetterFeedback('t', LetterState.MISS),
             LetterFeedback('a', LetterState.MISS)
         ])
 
+    #TODO: Add logic to pass failing test
     def test_doubleletterguess_match(self):
         """
         Given a guess containing two of the same letter. If the wordle word contains only 1 of those letters,
         if one of the letters is in the correct position, the first letter should repesent a miss.
         """
         guessed_word = 'algae'
-        game = Wordle('audio')
-
         result = self.game.guess(guessed_word)
 
         self.assertIsInstance(result, WordleGuessResult)

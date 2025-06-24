@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+import random
 from mcp.server.fastmcp import FastMCP
 from wordle import Wordle, WordleGuessResult
 
@@ -19,7 +20,7 @@ def start_game() -> str:
 
     After submitting a guess, the game provides feedback:
     a) MATCH (green) means the letter is correct and in the right position,
-    b) PARTIAL (yellow) means the letter is in the word but in the wrong position, and 
+    b) PARTIAL_MATCH (yellow) means the letter is in the word but in the wrong position, and 
     c) MISS (grey) means the letter is not in the word at all
     
     Returns:
@@ -28,19 +29,20 @@ def start_game() -> str:
     global game
 
     try:
-        word = 'AUDIO'
-        game = Wordle(word, get_word_list())
+        word_list = get_word_list()
+        word = word_list[random.randint(0,len(word_list))]
+        game = Wordle(word, set(word_list))
         logger.info(f"Wordle game reset, with new word {word}.")
         return "You've started a new game of wordle. Enjoy!"
     except Exception as e:
         logger.error(f"Wordle game failed to start. {e}")
         return f"Error: Could not start a new game of Wordle. Server might not be initialized. {e}"
 
-def get_word_list() -> set[str]:
+def get_word_list() -> list[str]:
     script_dir = Path(__file__).parent
     word_list_path = script_dir / 'word_list.json'
     with open(word_list_path, 'r') as f:
-        return set(json.load(f)['words'])
+        return list(json.load(f)['words'])
 
 @mcp.tool()
 def guess(guessed_word: str) -> WordleGuessResult:

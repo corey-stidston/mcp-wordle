@@ -4,7 +4,7 @@ from typing import List, Literal
 
 class LetterState(Enum):
     MATCH = "MATCH"         # Correct letter in correct position
-    PARTIAL = "PARTIAL"     # Correct letter in wrong position
+    PARTIAL_MATCH = "PARTIAL_MATCH"     # Correct letter in wrong position
     MISS = "MISS"           # Letter not in word
 
 @dataclass
@@ -80,7 +80,7 @@ class Wordle:
         if (guessed_word[index] == self.word[index]):
             output.append(LetterFeedback(guessed_word[index], LetterState.MATCH))
         elif (guessed_word[index] in self.word):
-            output.append(LetterFeedback(guessed_word[index], LetterState.PARTIAL))
+            output.append(LetterFeedback(guessed_word[index], LetterState.PARTIAL_MATCH))
         else:
             output.append(LetterFeedback(guessed_word[index], LetterState.MISS))
         
