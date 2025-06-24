@@ -1,0 +1,42 @@
+# MCP Wordle Server
+
+A Model Context Protocol (MCP) server implementation of the Wordle game that can be played through AI assistants like Claude.
+
+## About
+
+This project implements a Wordle game server that follows the Model Context Protocol, allowing AI assistants to play the classic word guessing game. Players have 6 attempts to guess a 5-letter word, with feedback provided for each guess.
+
+Letter feedback is provided as:
+- `MATCH` - Correct letter in correct position (green)
+- `PARTIAL_MATCH` - Correct letter in wrong position (yellow)  
+- `MISS` - Letter not in word (grey)
+
+
+## Installation
+
+You can install this server in Claude Desktop and interact with it right away by running:
+
+```
+mcp install server.py
+```
+
+Alternatively, you can add the following to your MCP config:
+
+```
+TODO: Work this out
+```
+
+## Usage
+
+TODO: Add screenshots
+
+## Playing the Game
+
+Once connected, you can have Claude:
+
+1. Start a new game with `start_game()`
+2. Make guesses using `guess(word)` 
+3. Interpret the feedback and make strategic guesses
+4. Play until winning or running out of attempts
+
+The game enforces valid 5-letter words and tracks remaining attempts automatically.
