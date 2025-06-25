@@ -40,7 +40,7 @@ First, [install uv](https://docs.astral.sh/uv/#installation). Then, add the foll
 }
 ```
 
-## Usage
+## Playing the game
 
 ### Starting a game
 ![starting a game](screenshots/1_start_game.jpg)
@@ -53,14 +53,3 @@ First, [install uv](https://docs.astral.sh/uv/#installation). Then, add the foll
 
 ### Lose scenario
 ![lose scenario](screenshots/3_lose_scenario.jpg)
-
-## Playing the Game
-
-Once connected, you can have Claude:
-
-1. Start a new game with `start_game()`
-2. Make guesses using `guess(word)` 
-3. Interpret the feedback and make strategic guesses
-4. Play until winning or running out of attempts
-
-The game enforces valid 5-letter words and tracks remaining attempts automatically.
