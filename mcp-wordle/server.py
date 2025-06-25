@@ -16,12 +16,7 @@ def start_game() -> str:
     """
     Starts a new game, resetting the wordle game state and loading a new word.
     Wordle is a word puzzle where players have six attempts to guess a hidden five-letter word. 
-    Each guess must be a valid five-letter word. 
-
-    After submitting a guess, the game provides feedback:
-    a) MATCH (green) means the letter is correct and in the right position,
-    b) PARTIAL_MATCH (yellow) means the letter is in the word but in the wrong position, and 
-    c) MISS (grey) means the letter is not in the word at all
+    Each guess must be a valid five-letter word.
     
     Returns:
         A confirmation message indicating the game has started.
@@ -40,9 +35,9 @@ def start_game() -> str:
 
 def get_word_list() -> list[str]:
     script_dir = Path(__file__).parent
-    word_list_path = script_dir / 'word_list.json'
+    word_list_path = script_dir / 'word_list.txt'
     with open(word_list_path, 'r') as f:
-        return list(json.load(f)['words'])
+        return [word.strip().lower() for word in f.readlines() if word.strip()]
 
 @mcp.tool()
 def guess(guessed_word: str) -> WordleGuessResult:
@@ -53,10 +48,18 @@ def guess(guessed_word: str) -> WordleGuessResult:
         guessed_word: the player's guess of the wordle word
     Returns:
         A dictionary containing the feedback of the guessed word, which letters were a match, partial match or miss.
-        Additionally, the guseed word, the number of attempts remaining and the game status which is either:
+        Additionally, the guessed word, the number of attempts remaining and the game status which is either:
         a) IN_PROGRESS, meaning there is a current game with >0 number of attempts left,
         b) WON, meaning you have guessed the correct word and the game is now over - congratulations! and,
         c) LOST, you were unable to guess the wordle word and you have run out of guesses - unlucky, try again!
+
+        An LLM must present the feedback for each letter on a new line so that it is easier to comprehend. 
+        Additionally, the LLM:
+        a) must show a GREEN square when the letter is in the right position.
+        b) must show a GREY or RED square when the letter does not match.
+        c) must show a YELLOW square when the letter is in the word but not in the correct position
+        d) must state which letters have been used.
+        e) must not make any word suggestions or clues.
     """
     global game
     return game.guess(guessed_word)

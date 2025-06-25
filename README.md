@@ -42,7 +42,17 @@ First, [install uv](https://docs.astral.sh/uv/#installation). Then, add the foll
 
 ## Usage
 
-TODO: Add screenshots
+### Starting a game
+![starting a game](screenshots/1_start_game.jpg)
+
+### Guessing a word
+![guessing a word](screenshots/2_guess.jpg)
+
+### Win scenario
+![win scenario](screenshots/4_win_scenario.jpg)
+
+### Lose scenario
+![lose scenario](screenshots/3_lose_scenario.jpg)
 
 ## Playing the Game
 
