@@ -56,7 +56,7 @@ def guess(guessed_word: str) -> WordleGuessResult:
         An LLM must present the feedback for each letter on a new line so that it is easier to comprehend. 
         Additionally, the LLM:
         a) must show a GREEN square when the letter is in the right position.
-        b) must show a GREY or RED square when the letter does not match.
+        b) must show a GREY square when the letter does not match.
         c) must show a YELLOW square when the letter is in the word but not in the correct position
         d) must state which letters have been used.
         e) must not make any word suggestions or clues.

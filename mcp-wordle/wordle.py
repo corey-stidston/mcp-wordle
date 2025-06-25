@@ -3,9 +3,9 @@ from enum import Enum
 from typing import List, Literal
 
 class LetterState(Enum):
-    MATCH = "🟩"         # Correct letter in correct position
-    PARTIAL_MATCH = "🟧"     # Correct letter in wrong position
-    MISS = "🟥"           # Letter not in word
+    MATCH = "MATCH"                     # Correct letter in correct position
+    PARTIAL_MATCH = "PARTIAL_MATCH"     # Correct letter in wrong position
+    MISS = "MISS"                       # Letter not in word
 
 @dataclass
 class LetterFeedback:
