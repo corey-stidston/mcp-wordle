@@ -78,7 +78,6 @@ class TestWordleGame(unittest.TestCase):
                     self.game.guess(word)
                 self.assertEqual(f"'{word}' is not a valid word.", str(context.exception))
 
-    #TODO: Add logic to pass failing test
     def test_doubleletterguess_partialmatch(self):
         """
         Given a guess containing two of the same letter. If the wordle word contains only 1 of those letters,
@@ -97,7 +96,6 @@ class TestWordleGame(unittest.TestCase):
             LetterFeedback('a', LetterState.MISS)
         ])
 
-    #TODO: Add logic to pass failing test
     def test_doubleletterguess_match(self):
         """
         Given a guess containing two of the same letter. If the wordle word contains only 1 of those letters,

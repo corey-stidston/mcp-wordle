@@ -70,21 +70,31 @@ class Wordle:
             
         return result
     
-    def _match(self, guessed_word, output = None, index = 0) -> List[LetterFeedback]:
-        if (output is None):
-            output = []
-
-        if (index == len(self.word)):
-            return output
+    def _match(self, guessed_word) -> List[LetterFeedback]:
+        feedback = [None] * len(guessed_word)
+        target_letter_counts = {}
         
-        if (guessed_word[index] == self.word[index]):
-            output.append(LetterFeedback(guessed_word[index], LetterState.MATCH))
-        elif (guessed_word[index] in self.word):
-            output.append(LetterFeedback(guessed_word[index], LetterState.PARTIAL_MATCH))
-        else:
-            output.append(LetterFeedback(guessed_word[index], LetterState.MISS))
+        # Count letters in target word
+        for letter in self.word:
+            target_letter_counts[letter] = target_letter_counts.get(letter, 0) + 1
         
-        return self._match(guessed_word, output, (index + 1))
+        # First pass: Mark exact matches and reduce available counts
+        for i in range(len(guessed_word)):
+            if guessed_word[i] == self.word[i]:
+                feedback[i] = LetterFeedback(guessed_word[i], LetterState.MATCH)
+                target_letter_counts[guessed_word[i]] -= 1
+        
+        # Second pass: Mark partial matches and misses
+        for i in range(len(guessed_word)):
+            if feedback[i] is None:  # Not already marked as exact match
+                letter = guessed_word[i]
+                if target_letter_counts.get(letter, 0) > 0:
+                    feedback[i] = LetterFeedback(letter, LetterState.PARTIAL_MATCH)
+                    target_letter_counts[letter] -= 1
+                else:
+                    feedback[i] = LetterFeedback(letter, LetterState.MISS)
+        
+        return feedback
 
 class WordleError(Exception):
     """Base exception class for all Wordle game errors."""
